@@ -22,7 +22,7 @@ const UserProfile = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/auth/profile",
+          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ const UserProfile = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/auth/profile",
+        "https://mugo-plumbing-solutions-api.onrender.com/api/auth/profile",
         form,
         {
           headers: {

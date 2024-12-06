@@ -14,7 +14,9 @@ const Plumbers = () => {
   useEffect(() => {
     const fetchPlumbers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/plumbers");
+        const response = await axios.get(
+          "https://mugo-plumbing-solutions-api.onrender.com/api/plumbers"
+        );
         setPlumbers(response.data);
         setFilteredPlumbers(response.data);
       } catch (err) {

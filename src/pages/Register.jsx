@@ -13,12 +13,10 @@ const RegisterForm = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://mugo-plumbing-solutions-api.onrender.com/api/auth/register",
         { name, email, password } // Removed role from here
       );
       alert("Registration successful! Please log in.");
-
-      // Redirect to dashboard after successful registration
       navigate("/dashboard");
     } catch (err) {
       setError(err.response ? err.response.data.msg : "Something went wrong");

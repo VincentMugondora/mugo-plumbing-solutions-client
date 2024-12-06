@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://mugo-plumbing-solutions-api.onrender.com/api/auth/login",
         { email, password }
       );
       const { token, user } = response.data;
@@ -23,9 +23,9 @@ const Login = () => {
 
       // Redirect based on user role
       if (user.role === "admin") {
-        navigate("/admin-dashboard");
+        navigate("/dashboard/admin-dashboard");
       } else if (user.role === "plumber") {
-        navigate("/plumber-dashboard");
+        navigate("/dashboard/plumber-dashboard");
       } else {
         navigate("/dashboard");
       }

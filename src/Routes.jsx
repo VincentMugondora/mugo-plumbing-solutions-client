@@ -32,13 +32,13 @@ const AppRoutes = () => {
   // Define the routes where Navbar and Footer should not be visible
   const noNavbarRoutes = [
     "/dashboard",
-    "/plumber-dashboard",
-    "/admin-dashboard",
+    "/dashboard/plumber-dashboard",
+    "/dashboard/admin-dashboard",
   ];
   const noFooterRoutes = [
     "/dashboard",
-    "/plumber-dashboard",
-    "/admin-dashboard",
+    "/dashboard/plumber-dashboard",
+    "/dashboard/admin-dashboard",
   ];
 
   const hideNavbar = noNavbarRoutes.includes(location.pathname);

@@ -1,51 +1,51 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Book = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    clientName: '',
-    email: '',
-    phone: '',
-    serviceType: '',
-    urgency: '',
-    description: '',
-    date: '',
-    startTime: '',
+    clientName: "",
+    email: "",
+    phone: "",
+    serviceType: "",
+    urgency: "",
+    description: "",
+    date: "",
+    startTime: "",
     address: {
-      street: '',
-      city: '',
-      postalCode: ''
-    }
+      street: "",
+      city: "",
+      postalCode: "",
+    },
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const serviceTypes = [
-    { id: 'pipe_repair', name: 'Pipe Repair' },
-    { id: 'drain_cleaning', name: 'Drain Cleaning' },
-    { id: 'water_heater', name: 'Water Heater Service' },
-    { id: 'installation', name: 'New Installation' },
-    { id: 'leak_detection', name: 'Leak Detection' },
-    { id: 'emergency', name: 'Emergency Plumbing' }
+    { id: "pipe_repair", name: "Pipe Repair" },
+    { id: "drain_cleaning", name: "Drain Cleaning" },
+    { id: "water_heater", name: "Water Heater Service" },
+    { id: "installation", name: "New Installation" },
+    { id: "leak_detection", name: "Leak Detection" },
+    { id: "emergency", name: "Emergency Plumbing" },
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes('address.')) {
-      const addressField = name.split('.')[1];
-      setFormData(prev => ({
+    if (name.includes("address.")) {
+      const addressField = name.split(".")[1];
+      setFormData((prev) => ({
         ...prev,
         address: {
           ...prev.address,
-          [addressField]: value
-        }
+          [addressField]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -53,42 +53,45 @@ const Book = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('Form data before submission:', {
+      console.log("Form data before submission:", {
         ...formData,
         date: formData.date,
-        startTime: formData.startTime
+        startTime: formData.startTime,
       });
 
-      const response = await axios.post('http://localhost:5000/api/bookings', {
-        clientName: formData.clientName,
-        email: formData.email,
-        phone: formData.phone,
-        serviceType: formData.serviceType,
-        urgency: formData.urgency,
-        description: formData.description,
-        date: formData.date,
-        startTime: formData.startTime,
-        address: {
-          street: formData.address.street,
-          city: formData.address.city,
-          postalCode: formData.address.postalCode
+      const response = await axios.post(
+        "https://mugo-plumbing-solutions-api.onrender.com/api/bookings",
+        {
+          clientName: formData.clientName,
+          email: formData.email,
+          phone: formData.phone,
+          serviceType: formData.serviceType,
+          urgency: formData.urgency,
+          description: formData.description,
+          date: formData.date,
+          startTime: formData.startTime,
+          address: {
+            street: formData.address.street,
+            city: formData.address.city,
+            postalCode: formData.address.postalCode,
+          },
         }
-      });
+      );
 
       if (response.data) {
-        console.log('Booking successful:', response.data);
-        navigate('/dashboard');
+        console.log("Booking successful:", response.data);
+        navigate("/dashboard");
       }
     } catch (error) {
-      console.error('Submission error:', error.response?.data || error.message);
-      setError(error.response?.data?.message || 'Failed to create booking');
+      console.error("Submission error:", error.response?.data || error.message);
+      setError(error.response?.data?.message || "Failed to create booking");
     }
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-8">Schedule a Plumbing Service</h1>
-      
+
       {error && (
         <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
           {error}
@@ -99,7 +102,7 @@ const Book = () => {
         {/* Personal Information */}
         <div className="bg-gray-50 p-4 rounded-lg space-y-4">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -148,7 +151,7 @@ const Book = () => {
         {/* Service Details */}
         <div className="bg-gray-50 p-4 rounded-lg space-y-4">
           <h2 className="text-xl font-semibold mb-4">Service Details</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -162,7 +165,7 @@ const Book = () => {
                 required
               >
                 <option value="">Select a service</option>
-                {serviceTypes.map(service => (
+                {serviceTypes.map((service) => (
                   <option key={service.id} value={service.id}>
                     {service.name}
                   </option>
@@ -207,7 +210,7 @@ const Book = () => {
         {/* Schedule */}
         <div className="bg-gray-50 p-4 rounded-lg space-y-4">
           <h2 className="text-xl font-semibold mb-4">Schedule</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -242,7 +245,7 @@ const Book = () => {
         {/* Address */}
         <div className="bg-gray-50 p-4 rounded-lg space-y-4">
           <h2 className="text-xl font-semibold mb-4">Service Address</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -291,7 +294,7 @@ const Book = () => {
         <div className="flex justify-end space-x-4">
           <button
             type="button"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             className="px-4 py-2 text-gray-600 hover:text-gray-800"
           >
             Cancel
@@ -308,4 +311,4 @@ const Book = () => {
   );
 };
 
-export default Book; 
+export default Book;
