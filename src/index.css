@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.poppins-semibold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.poppins-extrabold {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.poppins-black {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.poppins-thin-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.poppins-extralight-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.poppins-light-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.poppins-regular-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.poppins-medium-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.poppins-semibold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.poppins-bold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.poppins-extrabold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.poppins-black-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* HEADER */
+.active hr {
+  @apply block;
+}
+
+/* HERO STYLES */
+.glass {
+  height: 86vh;
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  backdrop-filter: blur(50px); /* Blurs the background behind the element */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37); /* Shadow for depth */
+  padding: 20px; /* Padding for content spacing */
+}
+
+@keyframes move-icon {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px); /* Move to the right */
+  }
+  100% {
+    transform: translateX(0); /* Move back to the original position */
+  }
+}
+
+.animate-icon {
+  animation: move-icon 1s ease-in-out infinite; /* Infinite animation */
+}
+
+.schedule {
+  z-index: 100 !important;
+}
+.heading {
+  color: #00c6b1;
+  font-size: 1.125rem;
+  letter-spacing: 0.025em;
+  line-height: 1.75rem;
+}
+
+/* LOGIN STYLES */
+.form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.register-form {
+  border: 1px solid black;
+  padding: 30px;
+  border-radius: 3px;
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.active hr {
+  @apply block;
+}
+
+::-webkit-scrollbar {
+  @apply hidden;
+}
+
+/* Remove all link underlines */
+a {
+  text-decoration: none !important;
+}
+
+/* Remove focus outline */
+a:focus {
+  text-decoration: none !important;
+}
+
+/* Remove hover underline */
+a:hover {
+  text-decoration: none !important;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+/* App.css or a separate CSS file */
+header {
+  background-color: #207fbe;
+
+}
+nav {
+  transition: transform 0.3s ease-in-out;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background-color: #207fbe;
+}
+

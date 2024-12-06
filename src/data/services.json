@@ -1,0 +1,46 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "title": "Faucet & Leak Repairs",
+      "description": "Professional repair services for dripping faucets and hidden leaks. Using advanced detection technology to solve issues quickly and efficiently.",
+      "image": "/services/service-1.jpg",
+      "iconName": "FaWrench"
+    },
+    {
+      "id": 2,
+      "title": "Remodeling Service",
+      "description": "Complete bathroom and kitchen transformation services. From simple fixture upgrades to full renovations, we help bring your dream space to reality.",
+      "image": "/services/service-2.jpg",
+      "iconName": "FaHome"
+    },
+    {
+      "id": 3,
+      "title": "Drain Cleaning & Repairs",
+      "description": "Professional solutions for all types of drain blockages. Using state-of-the-art equipment to handle both simple clogs and complex drain repairs.",
+      "image": "/services/service-3.jpg",
+      "iconName": "FaWater"
+    },
+    {
+      "id": 4,
+      "title": "Sewer Repair & Cleaning",
+      "description": "Comprehensive sewer maintenance and repair solutions. Advanced camera inspection technology helps us diagnose and fix issues with precision.",
+      "image": "/services/service-4.jpg",
+      "iconName": "FaToilet"
+    },
+    {
+      "id": 5,
+      "title": "Water Line Repair",
+      "description": "Complete water line maintenance and repair services. From leak detection to pipe replacement, we ensure your water system runs smoothly.",
+      "image": "/services/service-5.jpg",
+      "iconName": "FaTint"
+    },
+    {
+      "id": 6,
+      "title": "Gas Line Services",
+      "description": "Expert gas line installation and maintenance services. Our licensed professionals ensure safe, compliant, and reliable gas system operations.",
+      "image": "/services/service-6.jpg",
+      "iconName": "FaFire"
+    }
+  ]
+} 
