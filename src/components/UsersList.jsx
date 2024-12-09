@@ -9,14 +9,26 @@ const UsersList = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Unauthorized access. Please log in.");
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
         const response = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/users"
+          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/users",
+          config
         );
         setUsers(response.data);
-        setIsLoading(false);
       } catch (err) {
         console.error("Error fetching users:", err);
-        setError("Failed to fetch users.");
+        setError(err.response?.data?.message || "Failed to fetch users.");
+      } finally {
         setIsLoading(false);
       }
     };
@@ -45,6 +57,9 @@ const UsersList = () => {
                 <th className="px-6 py-3 text-left text-sm font-semibold">
                   Role
                 </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">
+                  Avatar
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -67,6 +82,13 @@ const UsersList = () => {
                     >
                       {user.role}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <img
+                      src={user.avatar || "/default-avatar.png"}
+                      alt="User Avatar"
+                      className="w-8 h-8 rounded-full"
+                    />
                   </td>
                 </tr>
               ))}
