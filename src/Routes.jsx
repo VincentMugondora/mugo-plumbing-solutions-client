@@ -20,7 +20,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard"; 
 import PlumberDashboard from "./pages/PLumberDashboard"; 
 import AdminDashboard from "./pages/AdminDashboard"; 
-import DashboardLayout from "./components/DashboardLayout"; 
+import DashboardLayout from "./components/DashBoardLayout"; 
 import { useAuth } from "./context/AuthContext";
 import NotAuthorized from "./components/NotAuthorized";
 import UsersList from "./components/UsersList";
