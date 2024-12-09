@@ -1,199 +1,184 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [editable, setEditable] = useState(false);
-  const [formData, setFormData] = useState({
+const Profile = () => {
+  const [user, setUser] = useState({
     name: "",
     email: "",
-    profileImage: null,
+    phoneNumber: "",
+    address: "",
+    avatar: "",
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [file, setFile] = useState(null); // For avatar upload
+
+  // Retrieve user ID from localStorage
+  const userId = localStorage.getItem("userId");
+  console.log("User ID from localStorage:", userId); // Debugging line
+
+  // Fetch the user profile
+  const fetchUserProfile = async () => {
+    if (!userId) {
+      console.error("User ID is null or undefined");
+      return; // Exit if user ID is not available
+    }
+
+    try {
+      const response = await axios.get(`/api/auth/profile/${userId}`);
+      setUser(response.data.user);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          return setError("No token found. Please log in.");
-        }
-
-        const response = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setUser(response.data);
-        setFormData({
-          name: response.data.name,
-          email: response.data.email,
-          profileImage: response.data.profileImage,
-        });
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch user data.");
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleEdit = () => {
-    setEditable(true);
-  };
-
-  const handleCancel = () => {
-    setEditable(false);
-    setFormData({
-      name: user.name,
-      email: user.email,
-      profileImage: user.profileImage,
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === "file") {
-      setFormData({ ...formData, profileImage: files[0] });
+    if (userId) {
+      fetchUserProfile();
     } else {
-      setFormData({ ...formData, [name]: value });
+      console.error("User ID is null or undefined");
     }
+  }, [userId]);
+
+  // Handle file change (for avatar)
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
+  // Handle form submit (update profile)
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
 
-    if (!token) {
-      return setError("No token found. Please log in.");
+    if (!userId) {
+      console.error("User ID is null or undefined");
+      return; // Exit if user ID is not available
     }
 
-    const form = new FormData();
-    form.append("name", formData.name);
-    form.append("email", formData.email);
-    if (formData.profileImage) {
-      form.append("profileImage", formData.profileImage);
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("phoneNumber", user.phoneNumber);
+    formData.append("address", user.address);
+
+    if (file) {
+      formData.append("avatar", file);
     }
 
     try {
       const response = await axios.put(
-        "https://mugo-plumbing-solutions-api.onrender.com/api/auth/profile",
-        form,
+        `/api/auth/profile/${userId}`,
+        formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-
-      setUser(response.data);
-      setEditable(false);
-      setError("");
-    } catch (err) {
-      setError("Failed to update user data.");
+      setUser(response.data.user); // Update state with new data
+      setIsEditing(false); // Hide edit form
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
-  if (loading)
-    return <div className="text-blue-500 text-center">Loading...</div>;
-  if (error) return <div className="text-red-500 text-center">{error}</div>;
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-blue-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-96">
-        <h1 className="text-3xl font-semibold text-center text-blue-600 mb-6">
-          {editable ? "Edit Profile" : "User Profile"}
-        </h1>
-        <div className="mb-4">
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-4">User Profile</h1>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="flex items-center space-x-6">
           <img
-            src={user.profileImage || "/default-profile.jpg"}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
+            src={user.avatar || "https://via.placeholder.com/150"}
+            alt="User Avatar"
+            className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-lg"
           />
-          {editable && (
-            <input
-              type="file"
-              name="profileImage"
-              onChange={handleChange}
-              className="block w-full text-blue-500 mb-4"
-            />
-          )}
+          <div>
+            <h2 className="text-2xl font-bold">{user.name}</h2>
+            <p className="text-lg text-gray-600">{user.email}</p>
+            <p className="text-sm text-gray-500">{user.role}</p>
+            <button
+              className="mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Update Profile"}
+            </button>
+          </div>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="flex justify-between mb-4">
-            <p className="text-lg font-medium text-gray-700">Name:</p>
-            {editable ? (
+
+        {isEditing && (
+          <form className="mt-6" onSubmit={handleProfileUpdate}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
               <input
                 type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="text-lg text-blue-600 p-1 border-b border-gray-300"
+                value={user.name}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                className="w-full p-2 mt-1 border rounded-md"
+                required
               />
-            ) : (
-              <p className="text-lg text-blue-600">{user.name}</p>
-            )}
-          </div>
-          <div className="flex justify-between mb-4">
-            <p className="text-lg font-medium text-gray-700">Email:</p>
-            {editable ? (
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="text-lg text-blue-600 p-1 border-b border-gray-300"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                className="w-full p-2 mt-1 border rounded-md"
+                required
               />
-            ) : (
-              <p className="text-lg text-blue-600">{user.email}</p>
-            )}
-          </div>
+            </div>
 
-          <div className="flex justify-between mb-4">
-            <p className="text-lg font-medium text-gray-700">Role:</p>
-            <p className="text-lg text-blue-600">{user.role}</p>
-          </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                value={user.phoneNumber || ""} // Ensure it's a string
+                onChange={(e) =>
+                  setUser({ ...user, phoneNumber: e.target.value })
+                }
+                className="w-full p-2 mt-1 border rounded-md"
+              />
+            </div>
 
-          <div className="flex justify-center mt-4">
-            {editable ? (
-              <>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg mr-2"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="px-6 py-2 bg-gray-300 text-black rounded-lg"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={handleEdit}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg"
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
-        </form>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <input
+                type="text"
+                value={user.address || ""} // Ensure it's a string
+                onChange={(e) => setUser({ ...user, address: e.target.value })}
+                className="w-full p-2 mt-1 border rounded-md"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="w-full p-2 mt-1"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="mt-4 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              Update Profile
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
 };
 
-export default UserProfile;
+export default Profile;

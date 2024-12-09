@@ -17,8 +17,8 @@ const Booking = () => {
       try {
         const endpoint =
           user?.role === "admin"
-            ? "http://localhost:5000/api/bookings"
-            : `http://localhost:5000/api/bookings/user/${user.id}`;
+            ? "https://mugo-plumbing-solutions-api.onrender.com/api/bookings"
+            : `https://mugo-plumbing-solutions-api.onrender.com/api/bookings/user/${user.id}`;
         const response = await axios.get(endpoint);
         setBookings(response.data);
       } catch (err) {
@@ -34,7 +34,9 @@ const Booking = () => {
 
   const deleteBooking = async (bookingId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
+      await axios.delete(
+        `https://mugo-plumbing-solutions-api.onrender.com/api/bookings/${bookingId}`
+      );
       setBookings(bookings.filter((booking) => booking._id !== bookingId));
       setSelectedBooking(null);
       console.log("Booking deleted successfully");

@@ -10,7 +10,7 @@ const NotAuthorized = () => {
           administrator if you believe this is an error.
         </p>
         <img
-          src="https://via.placeholder.com/150"
+          src="/denied.jpg"
           alt="Not Authorized"
           className="mx-auto mb-6"
         />

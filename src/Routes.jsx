@@ -23,6 +23,8 @@ import AdminDashboard from "./pages/AdminDashboard"; // Admin dashboard componen
 import DashboardLayout from "./components/DashboardLayout"; // Layout for the dashboard
 import { useAuth } from "./context/AuthContext";
 import NotAuthorized from "./components/NotAuthorized";
+import UsersList from "./components/UsersList";
+import ProfilePage from "./pages/Profile";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -49,6 +51,7 @@ const AppRoutes = () => {
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/plumbers" element={<Plumbers />} />
         <Route path="/plumbers/:city" element={<Plumbers />} />
         <Route path="/about" element={<About />} />
@@ -63,6 +66,7 @@ const AppRoutes = () => {
         <Route path="/testimonials" element={<Testimonial />} />
         <Route path="/appointment/:plumberId" element={<Appointment />} />
         <Route path="/book" element={<Book />} />
+        <Route path="/users" element={<UsersList />} />
         <Route path="/not-authorized" element={<NotAuthorized />} />
 
         <Route

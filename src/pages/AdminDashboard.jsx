@@ -5,26 +5,54 @@ import {
   FaClipboardList,
   FaSearch,
 } from "react-icons/fa";
-import axios from "axios"; // Import Axios for HTTP requests
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [totalUsers, setTotalUsers] = useState(0); // State for total users
-  const [pendingBookings, setPendingBookings] = useState(0); // State for pending bookings
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const navigate = useNavigate(); // Initialize navigate hook
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [pendingBookings, setPendingBookings] = useState(0);
+  const [trafficData, setTrafficData] = useState(null);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   const handleBookingsClick = () => {
-    navigate("/bookings"); // Navigate to the bookings page
+    navigate("/bookings");
   };
 
-  // Fetch data from the backend
+  const handleUsersClick = () => {
+    navigate("/users"); // Navigate to the /users page when the card is clicked
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,6 +71,18 @@ const AdminDashboard = () => {
         );
         setPendingBookings(pending.length);
 
+        // Fetch traffic data
+        const trafficResponse = await axios.get(
+          "https://mugo-plumbing-solutions-api.onrender.com/api/traffic"
+        );
+        setTrafficData(trafficResponse.data);
+
+        // Fetch analytics data
+        const analyticsResponse = await axios.get(
+          "https://mugo-plumbing-solutions-api.onrender.com/api/analytics"
+        );
+        setAnalyticsData(analyticsResponse.data);
+
         setIsLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -53,6 +93,42 @@ const AdminDashboard = () => {
 
     fetchData();
   }, []);
+
+  // Prepare traffic chart data
+  const trafficChartData = trafficData
+    ? {
+        labels: trafficData.labels,
+        datasets: [
+          {
+            label: "Traffic",
+            data: trafficData.values,
+            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderWidth: 3,
+            tension: 0.4, // Adds smooth curves to the line
+            fill: true, // Fill the area under the line
+          },
+        ],
+      }
+    : null;
+
+  // Prepare analytics chart data
+  const analyticsChartData = analyticsData
+    ? {
+        labels: analyticsData.labels,
+        datasets: [
+          {
+            label: "Analytics",
+            data: analyticsData.values,
+            borderColor: "rgba(153, 102, 255, 1)",
+            backgroundColor: "rgba(153, 102, 255, 0.2)",
+            borderWidth: 3,
+            tension: 0.4, // Adds smooth curves to the line
+            fill: true, // Fill the area under the line
+          },
+        ],
+      }
+    : null;
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -66,12 +142,10 @@ const AdminDashboard = () => {
           />
         </div>
         <div className="relative z-10 flex items-center justify-between w-full">
-          {/* Dashboard Title */}
           <h1 className="text-4xl font-extrabold tracking-wide">
             Admin Dashboard
           </h1>
 
-          {/* Search Bar */}
           <div className="relative flex items-center">
             <input
               type="text"
@@ -89,7 +163,10 @@ const AdminDashboard = () => {
       <main className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card 1: User Stats */}
-          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-blue-600">
+          <div
+            className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-blue-600 cursor-pointer"
+            onClick={handleUsersClick} // Make the card clickable
+          >
             <h3 className="text-xl font-semibold text-gray-800">Total Users</h3>
             {isLoading ? (
               <p className="text-gray-500">Loading...</p>
@@ -100,16 +177,12 @@ const AdminDashboard = () => {
             )}
             <div className="flex items-center mt-4 text-gray-500">
               <FaUsers className="text-2xl mr-2" />
-              <span>
-                {isLoading
-                  ? "Fetching user data..."
-                  : "+25 new users this week"}
-              </span>
+              <span>+25 new users this week</span>
             </div>
           </div>
 
           {/* Card 2: Revenue Stats */}
-          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-green-600">
+          <div className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-green-600">
             <h3 className="text-xl font-semibold text-gray-800">
               Total Revenue
             </h3>
@@ -122,7 +195,7 @@ const AdminDashboard = () => {
 
           {/* Card 3: Bookings Stats */}
           <div
-            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-orange-600 cursor-pointer"
+            className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-orange-600 cursor-pointer"
             onClick={handleBookingsClick}
           >
             <h3 className="text-xl font-semibold text-gray-800">
@@ -139,23 +212,87 @@ const AdminDashboard = () => {
             )}
             <div className="flex items-center mt-4 text-gray-500">
               <FaClipboardList className="text-2xl mr-2" />
-              <span>
-                {isLoading
-                  ? "Fetching booking data..."
-                  : `${pendingBookings} pending bookings`}
-              </span>
+              <span>{`${pendingBookings} pending bookings`}</span>
             </div>
           </div>
         </div>
 
-        {/* Chart or More Detailed Info */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-            Activity Overview
-          </h3>
-          <div className="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-            <span className="text-gray-500">Chart Placeholder</span>
-          </div>
+        {/* Traffic Data Card */}
+        <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-purple-600">
+          <h3 className="text-xl font-semibold">Traffic Data</h3>
+          {isLoading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : trafficData ? (
+            <div className="h-72">
+              <Line
+                data={trafficChartData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    tooltip: {
+                      backgroundColor: "rgba(0,0,0,0.7)",
+                    },
+                  },
+                  scales: {
+                    y: {
+                      ticks: {
+                        beginAtZero: true,
+                      },
+                    },
+                    x: {
+                      grid: {
+                        color: "#ddd",
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <p className="text-gray-500">No traffic data available</p>
+          )}
+        </div>
+
+        {/* Analytics Overview */}
+        <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-green-600">
+          <h3 className="text-xl font-semibold">Analytics Overview</h3>
+          {isLoading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : analyticsData ? (
+            <div className="h-72">
+              <Line
+                data={analyticsChartData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    tooltip: {
+                      backgroundColor: "rgba(0,0,0,0.7)",
+                    },
+                  },
+                  scales: {
+                    y: {
+                      ticks: {
+                        beginAtZero: true,
+                      },
+                    },
+                    x: {
+                      grid: {
+                        color: "#ddd",
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <p className="text-gray-500">No analytics data available</p>
+          )}
         </div>
       </main>
     </div>
