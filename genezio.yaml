@@ -1,0 +1,12 @@
+frontend:
+    path: ./
+    publish: dist
+    scripts:
+        build:
+            - npm run build
+        deploy:
+            - npm install
+    subdomain: mugo-plumbing-solutions-final
+name: mugo-plumbing-solutions-final
+region: us-east-1
+yamlVersion: 2
