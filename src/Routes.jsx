@@ -17,10 +17,10 @@ import Appointment from "./pages/Appointment";
 import ServiceDetail from "./components/services/ServiceDetail";
 import Book from "./pages/Book";
 import PrivateRoute from "./components/PrivateRoute";
-import Dashboard from "./pages/Dashboard"; // Main dashboard component
-import PlumberDashboard from "./pages/PlumberDashboard"; // Plumber dashboard component
-import AdminDashboard from "./pages/AdminDashboard"; // Admin dashboard component
-import DashboardLayout from "./components/DashboardLayout"; // Layout for the dashboard
+import Dashboard from "./pages/Dashboard"; 
+import PlumberDashboard from "./pages/PLumberDashboard"; 
+import AdminDashboard from "./pages/AdminDashboard"; 
+import DashboardLayout from "./components/DashboardLayout"; 
 import { useAuth } from "./context/AuthContext";
 import NotAuthorized from "./components/NotAuthorized";
 import UsersList from "./components/UsersList";
