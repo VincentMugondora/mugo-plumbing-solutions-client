@@ -50,21 +50,35 @@ const AdminDashboard = () => {
   };
 
   const handleUsersClick = () => {
-    navigate("/users"); // Navigate to the /users page when the card is clicked
+    navigate("/users");
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
         // Fetch users
         const usersResponse = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/users"
+          "https://mugo-plumbing-solutions-api.onrender.com/api/auth/users",
+          config
         );
         setTotalUsers(usersResponse.data.length);
 
         // Fetch bookings
         const bookingsResponse = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/bookings"
+          "https://mugo-plumbing-solutions-api.onrender.com/api/bookings",
+          config
         );
         const pending = bookingsResponse.data.filter(
           (booking) => booking.status === "pending"
@@ -73,26 +87,32 @@ const AdminDashboard = () => {
 
         // Fetch traffic data
         const trafficResponse = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/traffic"
+          "https://mugo-plumbing-solutions-api.onrender.com/api/traffic",
+          config
         );
         setTrafficData(trafficResponse.data);
 
         // Fetch analytics data
         const analyticsResponse = await axios.get(
-          "https://mugo-plumbing-solutions-api.onrender.com/api/analytics"
+          "https://mugo-plumbing-solutions-api.onrender.com/api/analytics",
+          config
         );
         setAnalyticsData(analyticsResponse.data);
 
         setIsLoading(false);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to fetch data.");
+        if (err.response?.status === 401) {
+          setError("Unauthorized. Redirecting to login...");
+          navigate("/login");
+        } else {
+          setError("An error occurred. Please try again later.");
+        }
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   // Prepare traffic chart data
   const trafficChartData = trafficData
@@ -105,8 +125,8 @@ const AdminDashboard = () => {
             borderColor: "rgba(75, 192, 192, 1)",
             backgroundColor: "rgba(75, 192, 192, 0.2)",
             borderWidth: 3,
-            tension: 0.4, // Adds smooth curves to the line
-            fill: true, // Fill the area under the line
+            tension: 0.4,
+            fill: true,
           },
         ],
       }
@@ -123,8 +143,8 @@ const AdminDashboard = () => {
             borderColor: "rgba(153, 102, 255, 1)",
             backgroundColor: "rgba(153, 102, 255, 0.2)",
             borderWidth: 3,
-            tension: 0.4, // Adds smooth curves to the line
-            fill: true, // Fill the area under the line
+            tension: 0.4,
+            fill: true,
           },
         ],
       }
@@ -132,7 +152,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Dashboard Header */}
       <header className="bg-gradient-to-r from-blue-800 to-blue-600 text-white p-6 flex justify-between items-center shadow-lg relative overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <img
@@ -159,13 +178,11 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card 1: User Stats */}
           <div
             className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-blue-600 cursor-pointer"
-            onClick={handleUsersClick} // Make the card clickable
+            onClick={handleUsersClick}
           >
             <h3 className="text-xl font-semibold text-gray-800">Total Users</h3>
             {isLoading ? (
@@ -181,7 +198,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Card 2: Revenue Stats */}
           <div className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-green-600">
             <h3 className="text-xl font-semibold text-gray-800">
               Total Revenue
@@ -193,7 +209,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Card 3: Bookings Stats */}
           <div
             className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 border-l-4 border-orange-600 cursor-pointer"
             onClick={handleBookingsClick}
@@ -217,7 +232,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Traffic Data Card */}
         <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-purple-600">
           <h3 className="text-xl font-semibold">Traffic Data</h3>
           {isLoading ? (
@@ -226,37 +240,13 @@ const AdminDashboard = () => {
             <p className="text-red-500">{error}</p>
           ) : trafficData ? (
             <div className="h-72">
-              <Line
-                data={trafficChartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    tooltip: {
-                      backgroundColor: "rgba(0,0,0,0.7)",
-                    },
-                  },
-                  scales: {
-                    y: {
-                      ticks: {
-                        beginAtZero: true,
-                      },
-                    },
-                    x: {
-                      grid: {
-                        color: "#ddd",
-                      },
-                    },
-                  },
-                }}
-              />
+              <Line data={trafficChartData} options={{ responsive: true }} />
             </div>
           ) : (
             <p className="text-gray-500">No traffic data available</p>
           )}
         </div>
 
-        {/* Analytics Overview */}
         <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-green-600">
           <h3 className="text-xl font-semibold">Analytics Overview</h3>
           {isLoading ? (
@@ -265,30 +255,7 @@ const AdminDashboard = () => {
             <p className="text-red-500">{error}</p>
           ) : analyticsData ? (
             <div className="h-72">
-              <Line
-                data={analyticsChartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    tooltip: {
-                      backgroundColor: "rgba(0,0,0,0.7)",
-                    },
-                  },
-                  scales: {
-                    y: {
-                      ticks: {
-                        beginAtZero: true,
-                      },
-                    },
-                    x: {
-                      grid: {
-                        color: "#ddd",
-                      },
-                    },
-                  },
-                }}
-              />
+              <Line data={analyticsChartData} options={{ responsive: true }} />
             </div>
           ) : (
             <p className="text-gray-500">No analytics data available</p>

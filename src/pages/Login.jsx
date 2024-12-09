@@ -15,7 +15,10 @@ const Login = () => {
     try {
       const response = await axios.post(
         "https://mugo-plumbing-solutions-api.onrender.com/api/auth/login",
-        { email, password }
+        {
+          email,
+          password,
+        }
       );
       const { token, user } = response.data;
 
