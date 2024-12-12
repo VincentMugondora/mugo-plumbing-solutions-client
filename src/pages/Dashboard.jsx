@@ -1,8 +1,8 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext"; // Adjust the path as necessary
+import { useAuth } from "../context/AuthContext"; 
 
 const Dashboard = () => {
-  const { user } = useAuth(); // Get the logged-in user from AuthContext
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
