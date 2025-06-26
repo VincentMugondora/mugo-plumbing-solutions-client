@@ -1,10 +1,11 @@
-import{ useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -13,13 +14,13 @@ const RegisterForm = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://mugo-plumbing-solutions-api.onrender.com/api/auth/register", // Ensure this is the correct URL
-        { name, email, password } // Sending name, email, and password to the backend
+        "http://localhost:3000/auth/signup", 
+        { fullName, email, phone, password }
       );
       alert("Registration successful! Please log in.");
-      navigate("/login"); // Redirect to login page after successful registration
+      navigate("/login");
     } catch (err) {
-      setError(err.response ? err.response.data.msg : "Something went wrong");
+      setError(err.response?.data?.msg || "Something went wrong");
     }
   };
 
@@ -37,10 +38,10 @@ const RegisterForm = () => {
             <input
               type="text"
               placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
-              className="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200"
+              className="w-full p-3 border-2 border-blue-300 rounded-lg"
             />
           </div>
 
@@ -51,7 +52,18 @@ const RegisterForm = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200"
+              className="w-full p-3 border-2 border-blue-300 rounded-lg"
+            />
+          </div>
+
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="w-full p-3 border-2 border-blue-300 rounded-lg"
             />
           </div>
 
@@ -62,13 +74,13 @@ const RegisterForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 transition duration-200"
+              className="w-full p-3 border-2 border-blue-300 rounded-lg"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none transition duration-200"
+            className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Register
           </button>
@@ -78,7 +90,7 @@ const RegisterForm = () => {
           Already have an account?{" "}
           <span
             className="font-semibold cursor-pointer hover:text-blue-700"
-            onClick={() => navigate("/login")} // Navigate to the login page if clicked
+            onClick={() => navigate("/login")}
           >
             Login
           </span>
